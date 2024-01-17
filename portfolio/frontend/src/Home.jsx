@@ -37,14 +37,20 @@ const productDetails = {
 };
 
 const Landingpage = () => {
-  const initialSelected=localStorage.getItem("selectedColor")
+  const initialSelected = localStorage.getItem("selectedColor");
   const [selected, setSelected] = useState(
-    initialSelected !== null ? parseInt(initialSelected,10):0
+    initialSelected !== null ? parseInt(initialSelected, 10) : 0
   );
   const [quantity, setQuantity] = useState(1);
   if (selected === null) {
     setSelected(0);
   }
+  const initialSize = localStorage.getItem("Size");
+
+  const [sizeCurrent, setSizeCurrent] = useState(
+    initialSize !== null ? parseInt(initialSize, 10) : 0
+  );
+  const [size, setSize] = useState(null);
   const smallImages = [
     "https://pier1.com/cdn/shop/products/f1b80d8c-fb9b-4c93-a1c5-6ee34b293527_1296x1296.jpg?v=1703954046",
     "https://pier1.com/cdn/shop/products/afc1d10f-e0cf-43bb-a667-306cac28272f_590x590.jpg?v=1703954062",
@@ -70,14 +76,7 @@ const Landingpage = () => {
     "https://pier1.com/cdn/shop/products/afc1d10f-e0cf-43bb-a667-306cac28272f_590x590.jpg?v=1703954062",
     "https://pier1.com/cdn/shop/products/aeda9397-0c2e-4d37-baa7-5bd50112f75d_590x590.jpg?v=1703954052",
   ];
-  const [selectImage, setSelectedImage] = useState(smallImages[0]);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [size, setSize] = useState(null);
-  const [sizeCurrent, setSizeCurrent] = useState(0);
-  const selectImages = (item) => {
-    setSelectedImage(item);
-  };
+
   const handleQuantityChange = (e) => {
     setQuantity(parseInt(e.target.value, 10));
   };
@@ -87,9 +86,22 @@ const Landingpage = () => {
       `Added to cart: ${quantity} ${productDetails.colors[selected]} item(s) ${size}`
     );
   };
-useEffect(()=>{
-  localStorage.setItem("selectedColor", selected.toString())
-},[selected])
+  useEffect(() => {
+    localStorage.setItem("selectedColor", selected.toString());
+  }, [selected]);
+  useEffect(() => {
+    localStorage.setItem("Size", sizeCurrent.toString());
+  }, [sizeCurrent]);
+
+  const preImg = localStorage.getItem("preImage");
+  const [selectImage, setSelectedImage] = useState(
+    preImg !== null ? preImg : smallImages[0]
+  );
+
+  useEffect(() => {
+    localStorage.setItem("preImage", selectImage);
+  }, [selectImage]);
+
   return (
     <div className="md:flex p-[30px] max-w-[95%] m-auto">
       <div className="md:w-1/2 flex-col flex">
@@ -109,7 +121,7 @@ useEffect(()=>{
               return (
                 <img
                   key={index}
-                  onClick={() => selectImages(item)}
+                  onClick={() => setSelectedImage(item)}
                   src={item}
                   alt=""
                   height={60}
@@ -121,23 +133,23 @@ useEffect(()=>{
         </div>
       </div>
       <div className="md:w-1/2 pl-[30px] mt-[10px]">
-        <h1 className="text-[24.375px] font-poppins mt-[10px]">
+        <h1 className="text-[24.375px] font-poppins mt-[10px] font-bold">
           Aisha Moroccan Triangle Geometric Area Rug
         </h1>
         <p className="text-[16px] font-normal">SKU: 111776</p>
         <h3 className="text-[#2b5193] text-[30px] font-poppins font-[600]">
           {/* Rs. 8,663.76 */}
-          {productDetails.price}
+          <span className="text-[30px]"> {productDetails.price}</span>
         </h3>
         <div className="my-[20px] font-[600] ">
-          <p className=" text-[#2b5194] p-[10px] text-[13px] bg-[#F2F4F8] max-w-[max-content]">
+          <p className=" text-[#2b5194] p-[10px] text-[13px] font-semibold font-Inter bg-[#F2F4F8] max-w-[max-content]">
             Code: {productDetails.code}
           </p>
         </div>
         <div className="mt-[25px] mb-[10px]">
           <div>
             <div className="mt-[20px]">
-              <p>
+              <p className=" text-[16px] my-[20px] font-normal font-Inter">
                 {selected !== null && (
                   <label htmlFor="color">
                     <span>Color: </span>
@@ -145,7 +157,7 @@ useEffect(()=>{
                   </label>
                 )}
               </p>
-              <div className="flex flex-wrap md:flex-nowrap px-[10px] py-[12px]">
+              <div className="flex flex-wrap lg:flex-nowrap px-[10px] py-[12px]">
                 {productDetails.colors.map((item, index) => {
                   return (
                     <div
@@ -171,33 +183,28 @@ useEffect(()=>{
             <div>
               <h3>
                 <span>Size: </span>
-                <span>4 X 6</span>
+                <span>{productDetails.sizes[sizeCurrent]}</span>
               </h3>
               <div className="flex flex-wrap ">
                 {productDetails.sizes.map((item, index) => {
                   const isSizeAvailable =
                     item === "10 X 13" || item === "2 X 14";
+
                   return (
                     <div
                       key={index}
-                      className="flex relative items-center justify-center mt-[10px] mr-[5px] "
+                      className="flex  relative items-center justify-center mt-[10px] mr-[5px]"
                     >
                       <button
                         disabled={isSizeAvailable}
-                        htmlFor="gray"
-                        className={`border-[1px] max-w-[max-content] text-center text-[16px] w-full cursor-pointer  rounded-[40px] px-[20px] py-[10px]
-                          ${
-                            sizeCurrent === index
-                              ? "bg-[#2b5193] text-[#fff]"
-                              : ""
-                          }
-                          ${isSizeAvailable ? "cross cursor-not-allowed" : ""}
-                          `}
+                        className={`  ${isSizeAvailable?"cursor-not-allowed":""} border-[1px] max-w-[max-content] text-center text-[16px] w-full  rounded-[40px] px-[20px] py-[10px]
+          ${sizeCurrent === index ? "bg-[#2b5193] text-[#fff]" : ""}
+          ${isSizeAvailable ? "cross" : ""}`}
                         onClick={() => setSizeCurrent(index)}
                       >
                         {item}
                       </button>
-                      <input type="text" className="hidden " />
+                      <input type="text" className="hidden" />
                     </div>
                   );
                 })}
@@ -217,7 +224,7 @@ useEffect(()=>{
                     <option value="2">2</option>
                   </select>
                 </div>
-                <div className="flex items-center font-Inter text-[#313335] font-normal p-[10px]">
+                <div className="flex gap-[10px] items-center font-Inter text-[#313335] font-normal p-[10px]">
                   <img
                     src="  https://pier1.com/cdn/shop/t/292/assets/pier_1_coins.svg?v=133517799025895801161704806046"
                     alt=""
@@ -238,8 +245,11 @@ useEffect(()=>{
               </div>
               <div className="flex flex-col gap-[10px]">
                 <div>
-                  <button className="text-[#2d5194] flex  items-center text-[16px] m-[10px]">
-                    <CiHeart /> <span>Add to Wishlist</span>
+                  <button className="text-[#2d5194] flex items-center h-[20px]  m-[10px] font-Inter text-[16px]">
+                    <span className="flex items-center">
+                      <CiHeart size={24} />
+                      <span>Add to Wishlist</span>
+                    </span>
                   </button>
                 </div>
                 <div className="">
