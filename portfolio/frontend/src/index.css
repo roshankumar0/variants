@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    color: #313335;
+}
+/* Landingpage.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+@layer components {
+  .after\:border-center::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    border-bottom: 1px solid #313335; /* Adjust color and style as needed */
+  }
+}
+
+.cross::after{
+  content: '';
+  background-color: #313335;
+  height: 2px;
+  width: 70%;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  left: 50%;
+
+  
+}
+
+.font-Inter{
+  font-family: 'Inter',sans-serif;
+}
